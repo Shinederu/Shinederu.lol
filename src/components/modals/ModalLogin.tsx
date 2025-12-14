@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
-import { X } from "lucide-react"; // Icône de croix pour fermer
+import { X } from "lucide-react";
 import { useHttpClient } from "@/shared/hooks/http-hook";
-//import { AuthContext } from "@/shared/context/AuthContext";
+import { AuthContext } from "@/shared/context/AuthContext";
 import Title from "../decoration/Title";
 import { ModalContext } from "@/shared/context/ModalContext";
 import { useNavigate } from "react-router-dom";
@@ -13,7 +13,7 @@ const ModalLogin = () => {
 
     const [isOpen, setIsOpen] = useState(false);
     const { sendRequest } = useHttpClient();
-  //  const authCtx = useContext(AuthContext);
+    const authCtx = useContext(AuthContext);
     const navigate = useNavigate();
 
 
@@ -68,7 +68,7 @@ const ModalLogin = () => {
                 password: formData.loginPassword,
             },
             onSuccess: async () => {
-              //  authCtx.reload();
+                authCtx.reload();
                 setIsOpen(false);
             },
             onError: (error) => {

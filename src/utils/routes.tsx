@@ -36,6 +36,7 @@ const logged = () => (
 
 export const getRoutes = (role: string) => {
 
+    console.log("User role:", role);
 
     switch (role) {
         case 'user': //Cas utilisateur

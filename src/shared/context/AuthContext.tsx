@@ -45,37 +45,52 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     }, []);
 
     const reload = useCallback(async (): Promise<boolean> => {
-        let ok = true;
-        await sendRequest({
-            key: 3,
-            url: import.meta.env.VITE_SHINEDERU_API_AUTH_URL,
-            method: 'GET',
-            body: { action: 'me' },
-            onSuccess: (data) => {
-                updateAuthData({
-                    isLoggedIn: true,
-                    id: data.user.id,
-                    username: data.user.username,
-                    email: data.user.email,
-                    avatar_url: data.user.avatar_url,
-                    role: data.user.role,
-                    created_at: data.user.created_at,
-                });
-            },
-            onError: () => {
-                ok = false;
-                updateAuthData({
-                    isLoggedIn: false,
-                    id: 0,
-                    username: '',
-                    email: '',
-                    avatar_url: '',
-                    role: '',
-                    created_at: '',
-                });
-            },
-        });
-        return ok;
+        if (import.meta.env.VITE_DEV_MODE === 'true') {
+            updateAuthData({
+                isLoggedIn: true,
+                id: 1,
+                username: "Administrator",
+                email: "Thing@Shinederu.lol",
+                avatar_url: "",
+                role: "user",
+                created_at: "2024-01-01T00:00:00Z",
+            });
+            return true;
+        } else {
+            let ok = true;
+            await sendRequest({
+                key: 3,
+                url: import.meta.env.VITE_SHINEDERU_API_AUTH_URL,
+                method: 'GET',
+                body: { action: 'me' },
+                onSuccess: (response) => {
+                    console.log("Auth data reloaded:", response.data);
+                    updateAuthData({
+                        isLoggedIn: true,
+                        id: response.data.user.id,
+                        username: response.data.user.username,
+                        email: response.data.user.email,
+                        avatar_url: response.data.user.avatar_url,
+                        role: response.data.user.role,
+                        created_at: response.data.user.created_at,
+                    });
+                },
+                onError: () => {
+                    ok = false;
+                    updateAuthData({
+                        isLoggedIn: false,
+                        id: 0,
+                        username: '',
+                        email: '',
+                        avatar_url: '',
+                        role: '',
+                        created_at: '',
+                    });
+                },
+            });
+
+            return ok;
+        }
     }, [sendRequest, updateAuthData]);
 
     const contextValue: AuthContextType = {

@@ -1,40 +1,17 @@
-﻿import { AuthContext } from "@/shared/context/AuthContext";
-import { ModalContext } from "@/shared/context/ModalContext";
-import { useHttpClient } from "@/shared/hooks/http-hook";
+﻿import { ModalContext } from "@/shared/context/ModalContext";
 import { useContext } from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "@shinederu/auth-react";
 
 const ProfileHeader = () => {
-  const { sendRequest } = useHttpClient();
-  const authCtx = useContext(AuthContext);
   const modalCtx = useContext(ModalContext);
+  const auth = useAuth();
 
   const sendLogout = async () => {
-    try {
-      await sendRequest({
-        key: 3,
-        url: import.meta.env.VITE_SHINEDERU_API_AUTH_URL,
-        method: "POST",
-        body: {
-          action: "logout",
-        },
-        onSuccess: () => {
-          authCtx.setAuthData({
-            isLoggedIn: false,
-            id: 0,
-            username: "",
-            email: "",
-            role: "",
-            avatar_url: "",
-            created_at: "",
-          });
-        },
-        onError: (error) => {
-          modalCtx.open(error, "error");
-        },
-      });
-    } catch (error) {
-      modalCtx.open(error + "", "error");
+    const response = await auth.logout();
+
+    if (!response.ok) {
+      modalCtx.open(response.error ?? "Erreur lors de la deconnexion.", "error");
     }
   };
 

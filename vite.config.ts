@@ -8,11 +8,18 @@ export default defineConfig({
   build: {
     chunkSizeWarningLimit: 1600
   },
+  server: {
+    fs: {
+      allow: ['..']
+    }
+  },
   resolve: {
     alias: [
       { find: '@', replacement: path.resolve(__dirname, 'src') },
       { find: '@pages', replacement: path.resolve(__dirname, 'src/pages') },
-      { find: '@comp', replacement: path.resolve(__dirname, 'src/components') }
+      { find: '@comp', replacement: path.resolve(__dirname, 'src/components') },
+      { find: '@shinederu/auth-core', replacement: path.resolve(__dirname, '../shinederu-auth-core/src/index.ts') },
+      { find: '@shinederu/auth-react', replacement: path.resolve(__dirname, '../shinederu-auth-react/src/index.ts') }
     ]
   }
 });

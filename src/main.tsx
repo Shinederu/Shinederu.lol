@@ -5,17 +5,18 @@ import "./index.css";
 import { AuthProvider } from "./shared/context/AuthContext";
 import { ModalProvider } from "./shared/context/ModalContext";
 import MessageModal from "./components/modals/ModalMessage";
+import { AuthProvider as ExternalAuthProvider } from "@shinederu/auth-react";
+import { authClient } from "./shared/auth/client";
 
 createRoot(document.getElementById('app')!).render(
-  /* Contexte d'authentification */
-  <AuthProvider>
-    {/* Permet le routage avec react-router-dom */}
-    <BrowserRouter>
-      <ModalProvider>
-        {/* Composant principal de l'application */}
-        <App />
-        <MessageModal/>
-      </ModalProvider>
-    </BrowserRouter>
-  </AuthProvider>
+  <ExternalAuthProvider client={authClient} autoRefreshOnMount={false}>
+    <AuthProvider>
+      <BrowserRouter>
+        <ModalProvider>
+          <App />
+          <MessageModal />
+        </ModalProvider>
+      </BrowserRouter>
+    </AuthProvider>
+  </ExternalAuthProvider>
 );

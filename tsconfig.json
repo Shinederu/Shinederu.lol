@@ -34,12 +34,20 @@
       ],
       "@comp/*": [
         "./src/components/*"
+      ],
+      "@shinederu/auth-core": [
+        "../shinederu-auth-core/src/index.ts"
+      ],
+      "@shinederu/auth-react": [
+        "../shinederu-auth-react/src/index.ts"
       ]
     }
   },
   "include": [
     "src",
-    "src/types/global.d.ts"
+    "src/types/global.d.ts",
+    "../shinederu-auth-core/src",
+    "../shinederu-auth-react/src"
   ],
   "references": [
     {

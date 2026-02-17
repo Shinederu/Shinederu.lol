@@ -1,125 +1,80 @@
-import Title from "@/components/decoration/Title";
+﻿import Title from "@/components/decoration/Title";
 import { AuthContext } from "@/shared/context/AuthContext";
-import { useHttpClient } from "@/shared/hooks/http-hook";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@shinederu/auth-react";
+
+const getResponseMessage = (data: unknown, fallback: string) => {
+  if (data && typeof data === "object") {
+    const record = data as Record<string, unknown>;
+    if (typeof record.message === "string") return record.message;
+    if (record.data && typeof record.data === "object") {
+      const nested = record.data as Record<string, unknown>;
+      if (typeof nested.message === "string") return nested.message;
+    }
+  }
+  return fallback;
+};
 
 const NewEmail = () => {
+  const [message, setMessage] = useState("Chargement...");
+  const authCtx = useContext(AuthContext);
+  const auth = useAuth();
+  const navigate = useNavigate();
 
-    const [message, setMessage] = useState("Chargement...");
-    const authCtx = useContext(AuthContext);
-    const { sendRequest } = useHttpClient();
-    const navigate = useNavigate();
+  const refreshAuthData = async () => {
+    await authCtx.reload();
+  };
 
-    const sendRefreshAuthData = async () => {
-        await sendRequest({
-            key: 3,
-            url: import.meta.env.VITE_SHINEDERU_API_AUTH_URL,
-            method: 'GET',
-            body: { action: "me" },
-            onSuccess: (data) => {
-                authCtx.setAuthData({
-                    isLoggedIn: true,
-                    id: data.user.id,
-                    username: data.user.username,
-                    email: data.user.email,
-                    role: data.user.role,
-                    created_at: data.user.created_at,
-                });
-            },
-            onError: () => {
-                authCtx.setAuthData({
-                    isLoggedIn: false,
-                    id: 0,
-                    username: '',
-                    email: '',
-                    role: '',
-                    created_at: '',
-                });
-            },
-        });
+  useEffect(() => {
+    const token = new URLSearchParams(location.search).get("token");
+    const action = new URLSearchParams(location.search).get("action");
+
+    if (!token || !action) {
+      navigate("/");
+      return;
+    }
+
+    const runAction = async () => {
+      switch (action) {
+        case "confirmEmailUpdate": {
+          const response = await auth.confirmEmailUpdate(token);
+          if (response.ok) {
+            setMessage(getResponseMessage(response.data, "Email mis a jour."));
+            await refreshAuthData();
+          } else {
+            setMessage(response.error ?? "Erreur lors de la confirmation d'email.");
+          }
+          break;
+        }
+        case "verifyEmail": {
+          const response = await auth.verifyEmail(token);
+          setMessage(response.ok ? getResponseMessage(response.data, "Email verifie.") : response.error ?? "Erreur de verification.");
+          break;
+        }
+        case "revokeRegister": {
+          const response = await auth.revokeRegister(token);
+          setMessage(response.ok ? getResponseMessage(response.data, "Inscription revoquee.") : response.error ?? "Erreur de revocation.");
+          break;
+        }
+        case "revokeEmailUpdate": {
+          const response = await auth.revokeEmailUpdate(token);
+          setMessage(response.ok ? getResponseMessage(response.data, "Changement d'email annule.") : response.error ?? "Erreur de revocation.");
+          break;
+        }
+        default:
+          setMessage("Action inconnue.");
+      }
     };
 
-    useEffect(() => {
-        const token = new URLSearchParams(location.search).get('token');
-        const action = new URLSearchParams(location.search).get('action');
-        if (!token || !action) {
-            navigate("/");
-            return;
-        }
+    void runAction();
+  }, [auth, authCtx, navigate]);
 
-        switch (action) {
-
-            case "confirmEmailUpdate":
-                sendRequest({
-                    key: 3,
-                    url: import.meta.env.VITE_SHINEDERU_API_AUTH_URL,
-                    method: 'POST',
-                    body: { action: "confirmEmailUpdate", token: token },
-                    onSuccess: (data) => {
-                        setMessage(data.message);
-                        sendRefreshAuthData();
-                    },
-                    onError: (error) => {
-                        setMessage(error);
-                    }
-                })
-                break;
-            case "verifyEmail":
-                sendRequest({
-                    key: 3,
-                    url: import.meta.env.VITE_SHINEDERU_API_AUTH_URL,
-                    method: 'POST',
-                    body: { action: "verifyEmail", token: token },
-                    onSuccess: (data) => {
-                        setMessage(data.message);
-                    },
-                    onError: (error) => {
-                        setMessage(error);
-                    }
-                })
-                break;
-            case "revokeRegister":
-                sendRequest({
-                    key: 3,
-                    url: import.meta.env.VITE_SHINEDERU_API_AUTH_URL,
-                    method: 'POST',
-                    body: { action: "revokeRegister", token: token },
-                    onSuccess: (data) => {
-                        setMessage(data.message);
-                    },
-                    onError: (error) => {
-                        setMessage(error);
-                    }
-                })
-                break;
-            case "revokeEmailUpdate":
-                sendRequest({
-                    key: 3,
-                    url: import.meta.env.VITE_SHINEDERU_API_AUTH_URL,
-                    method: 'POST',
-                    body: { action: "revokeEmailUpdate", token: token },
-                    onSuccess: (data) => {
-                        setMessage(data.message);
-                    },
-                    onError: (error) => {
-                        setMessage(error);
-                    }
-                })
-                break;
-            default:
-                setMessage("Action inconnue.");
-                break;
-        }
-    }, []);
-
-
-    return (
-        <>
-            <Title title={message} size={1} />
-        </>
-    )
-}
-
+  return (
+    <>
+      <Title title={message} size={1} />
+    </>
+  );
+};
 
 export default NewEmail;

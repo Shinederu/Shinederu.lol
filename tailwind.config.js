@@ -1,4 +1,4 @@
-const { nextui } = require('@nextui-org/react');
+﻿const { nextui } = require('@nextui-org/react');
 
 module.exports = {
   content: [
@@ -9,7 +9,16 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        'rubik': ['Rubik','sans-serif']
+        rubik: ['Rubik', 'sans-serif']
+      },
+      keyframes: {
+        fadeInUp: {
+          '0%': { opacity: '0', transform: 'translateY(10px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' }
+        }
+      },
+      animation: {
+        fadeInUp: 'fadeInUp 0.5s ease-out'
       }
     }
   },
@@ -17,7 +26,7 @@ module.exports = {
   safelist: [
     {
       pattern: /grid-cols-([123456])/,
-      variants: ['sm', 'md', 'lg'],
+      variants: ['sm', 'md', 'lg']
     }
   ]
 };

@@ -9,6 +9,7 @@ type AuthDataType = {
   email: string;
   avatar_url?: string;
   role: string;
+  is_admin: boolean;
   created_at: string;
 };
 
@@ -24,6 +25,7 @@ const EMPTY_AUTH: AuthDataType = {
   email: "",
   avatar_url: "",
   role: "",
+  is_admin: false,
   created_at: "",
 };
 
@@ -31,6 +33,15 @@ const toNumber = (value: unknown): number => {
   if (typeof value === "number") return value;
   if (typeof value === "string") return Number(value) || 0;
   return 0;
+};
+
+const toBool = (value: unknown): boolean => {
+  if (value === null || value === undefined) return false;
+  if (typeof value === "boolean") return value;
+  if (typeof value === "number") return value === 1;
+
+  const v = String(value).trim().toLowerCase();
+  return ["1", "true", "yes", "on", "admin"].includes(v);
 };
 
 const mapUserToAuthData = (isLoggedIn: boolean, user: AuthUser | null | undefined): AuthDataType => {
@@ -42,7 +53,8 @@ const mapUserToAuthData = (isLoggedIn: boolean, user: AuthUser | null | undefine
     username: String(user.username ?? ""),
     email: String(user.email ?? ""),
     avatar_url: String(user.avatar_url ?? ""),
-    role: String(user.role ?? ""),
+    role: String(user.role ?? "").toLowerCase(),
+    is_admin: toBool(user.is_admin) || String(user.role ?? "").toLowerCase() === "admin",
     created_at: String(user.created_at ?? ""),
   };
 };
@@ -72,6 +84,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
         email: "Thing@Shinederu.lol",
         avatar_url: "",
         role: "user",
+        is_admin: false,
         created_at: "2024-01-01T00:00:00Z",
       });
       return true;

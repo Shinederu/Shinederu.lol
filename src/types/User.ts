@@ -3,6 +3,7 @@ export type UserType = {
         username: string,
         email: string,
         role: string,
+        is_admin?: boolean,
         created_at: string,
 };
 

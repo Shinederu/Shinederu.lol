@@ -7,6 +7,8 @@ import NewEmail from "@/pages/NewEmail";
 import NewPassword from "@/pages/NewPassword";
 import Profile from "@/pages/Profile";
 import ResetPassword from "@/pages/ResetPassword";
+import Announcements from "@/pages/Announcements";
+import Users from "@/pages/Users";
 import { Navigate, Route } from "react-router-dom";
 
 
@@ -30,18 +32,25 @@ const logged = () => (
         {anonymous()}
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/profile" element={<Profile />} />
-
     </>
 )
 
-export const getRoutes = (role: string) => {
+const adminLogged = () => (
+    <>
+        {logged()}
+        <Route path="/users" element={<Users />} />
+        <Route path="/announcements" element={<Announcements />} />
+    </>
+)
 
-    console.log("User role:", role);
-
-    switch (role) {
-        case 'user': //Cas utilisateur
-            return logged();
-        default: //Cas visiteur
-            return anonymous();
+export const getRoutes = (isLoggedIn: boolean, isAdmin: boolean) => {
+    if (!isLoggedIn) {
+        return anonymous();
     }
+
+    if (isAdmin) {
+        return adminLogged();
+    }
+
+    return logged();
 };

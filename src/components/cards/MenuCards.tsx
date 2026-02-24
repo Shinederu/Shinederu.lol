@@ -12,7 +12,7 @@ type MenuCardsType = {
 const MenuCards = (props: MenuCardsType) => {
   const cardContent = (
     <div
-      className={`w-full max-w-sm min-h-72 sm:min-h-80 rounded-xl border-2 ${props.active ? "border-[#3eda30]" : "border-[#da3030]"} transition-transform duration-300 hover:scale-[1.02]`}
+      className={`w-full aspect-square rounded-xl border-2 ${props.active ? "border-[#3eda30]" : "border-[#da3030]"} transition-transform duration-300 hover:scale-[1.02]`}
       style={{
         backgroundImage: `url(/img/dashboard/${props.picture})`,
         backgroundSize: "cover",
@@ -29,7 +29,11 @@ const MenuCards = (props: MenuCardsType) => {
   );
 
   if (props.active) {
-    return <Link to={props.url}>{cardContent}</Link>;
+    return (
+      <Link to={props.url} className="block w-full">
+        {cardContent}
+      </Link>
+    );
   }
 
   return cardContent;

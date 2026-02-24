@@ -1,8 +1,4 @@
-﻿type InfoCardsProps = {
-  twitchStatus: string;
-};
-
-const InfoCards = ({ twitchStatus }: InfoCardsProps) => {
+const InfoCards = () => {
   return (
     <div className="pb-8 mb-6 w-full inline-block border-b-4 border-[#6b6b6b]">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-8">
@@ -16,7 +12,6 @@ const InfoCards = ({ twitchStatus }: InfoCardsProps) => {
               Il arrive de temps en temps que je lance des streams sur Twitch. Je n'ai aucun planning et ca n'est pas mon activite principale.
               Mais j'aime bien en faire de temps en temps pour m'amuser.
             </p>
-            <p className="mt-2 text-sm text-[#adadad]">Statut du moment: {twitchStatus}</p>
           </div>
           <div className="flex justify-center w-full">
             <a

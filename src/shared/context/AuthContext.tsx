@@ -1,4 +1,4 @@
-﻿import { createContext, PropsWithChildren, useCallback, useMemo, useState } from "react";
+import { createContext, PropsWithChildren, useCallback, useMemo, useState } from "react";
 import { useAuth } from "@shinederu/auth-react";
 import { AuthUser } from "@shinederu/auth-core";
 
@@ -81,7 +81,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
         isLoggedIn: true,
         id: 1,
         username: "Administrator",
-        email: "Thing@Shinederu.lol",
+        email: "Thing@Shinederu.ch",
         avatar_url: "",
         role: "user",
         is_admin: false,

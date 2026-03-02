@@ -1,4 +1,4 @@
-﻿import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import ModalLogin from "../modals/ModalLogin";
 import { useContext, useState } from "react";
 import { AuthContext } from "@/shared/context/AuthContext";
@@ -24,7 +24,7 @@ const Header = () => {
           </Link>
         ) : (
           <Link to="/" className="font-bold">
-            Shinederu.lol
+            Shinederu.ch
           </Link>
         )}
       </h1>

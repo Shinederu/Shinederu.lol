@@ -110,7 +110,12 @@ const ModalLogin = () => {
             <div className="py-4 grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="rounded-xl border-2 border-[#5120c2] p-8">
                 <Title size={2} title="Connexion" />
-                <form>
+                <form
+                  onSubmit={(event) => {
+                    event.preventDefault();
+                    void sendLogin();
+                  }}
+                >
                   <input
                     type="text"
                     name="loginUsername"
@@ -131,11 +136,23 @@ const ModalLogin = () => {
                 <button onClick={forgottedPassword} className="text-gray-500">
                   Mot de passe oublie ?
                 </button>
+                <button
+                  type="submit"
+                  onClick={sendLogin}
+                  className="mt-4 w-full bg-gradient-to-r bg-[#6a11cb] text-white px-4 py-2 rounded-md font-bold hover:scale-105 transition-transform"
+                >
+                  Se connecter
+                </button>
               </div>
 
               <div className="rounded-xl border-2 border-[#20c228] p-8">
                 <Title size={2} title="Inscription" />
-                <form>
+                <form
+                  onSubmit={(event) => {
+                    event.preventDefault();
+                    void sendRegister();
+                  }}
+                >
                   <input
                     type="text"
                     name="registerUsername"
@@ -169,24 +186,14 @@ const ModalLogin = () => {
                     className="w-full p-3 border border-gray-700 rounded bg-[#202020] text-white mb-4"
                   />
                 </form>
+                <button
+                  type="submit"
+                  onClick={sendRegister}
+                  className="w-full bg-gradient-to-r bg-[#11cb5f] text-white px-4 py-2 rounded-md font-bold hover:scale-105 transition-transform"
+                >
+                  S'inscrire
+                </button>
               </div>
-            </div>
-
-            <div className="pr-4 pl-4 grid grid-cols-2 gap-16">
-              <button
-                type="submit"
-                onClick={sendLogin}
-                className="bg-gradient-to-r bg-[#6a11cb] text-white px-4 py-2 rounded-md font-bold hover:scale-105 transition-transform"
-              >
-                Se connecter
-              </button>
-              <button
-                type="submit"
-                onClick={sendRegister}
-                className="bg-gradient-to-r bg-[#11cb5f] text-white px-4 py-2 rounded-md font-bold hover:scale-105 transition-transform"
-              >
-                S'inscrire
-              </button>
             </div>
           </div>
         </div>

@@ -8,15 +8,15 @@ const Dashboard = () => {
   return (
     <div className="grid gap-8">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-        <MenuCards active={true} name="Profile" desc="Vois et modifie ton profile !" url="/profile" picture="profile.gif" />
+        <MenuCards active={true} name="Profile" desc="Vois et modifie ton profile !" url="/profile" picture="Profile" />
         {authCtx.is_admin ? (
-          <MenuCards active={true} name="Utilisateurs" desc="Gere les droits administrateurs." url="/users" picture="profile.gif" />
+          <MenuCards active={true} name="Utilisateurs" desc="Gere les droits administrateurs." url="/users" picture="Utilisateurs" />
         ) : null}
         {authCtx.is_admin ? (
-          <MenuCards active={true} name="Annonces" desc="Gere les annonces de l'accueil." url="/announcements" picture="profile.gif" />
+          <MenuCards active={true} name="Annonces" desc="Gere les annonces de l'accueil." url="/announcements" picture="Annonces" />
         ) : null}
-        <MenuCards active={false} name="MelodyQuest" desc="Un blindtest amusant !" url="/MelodyQuest" picture="MelodyQuest.png" />
-        <MenuCards active={false} name="Ananas" desc="Le celebre reseau social #FUN" url="/Ananas" picture="Ananas.png" />
+        <MenuCards active={false} name="MelodyQuest" desc="Un blindtest amusant !" url="/MelodyQuest" picture="MelodyQuest" />
+        <MenuCards active={false} name="Ananas" desc="Le celebre reseau social #FUN" url="/Ananas" picture="Ananas" />
       </div>
 
       <div className="flex items-center flex-col justify-center gap-4 rounded-xl border border-[#2f2f2f] bg-[#181818] py-8 px-4">

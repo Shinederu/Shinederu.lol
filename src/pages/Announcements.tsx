@@ -44,7 +44,7 @@ const Announcements = () => {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
 
-  const isAdmin = authCtx.is_admin;
+  const canManageAnnouncements = authCtx.can_manage_announcements;
 
   const loadAnnouncements = async () => {
     setLoading(true);
@@ -61,13 +61,13 @@ const Announcements = () => {
   };
 
   useEffect(() => {
-    if (!isAdmin) return;
+    if (!canManageAnnouncements) return;
     void loadAnnouncements();
-  }, [isAdmin]);
+  }, [canManageAnnouncements]);
 
   const submitLabel = useMemo(() => (editingId ? "Mettre a jour" : "Creer"), [editingId]);
 
-  if (!isAdmin) {
+  if (!canManageAnnouncements) {
     return <Navigate to="/dashboard" replace />;
   }
 

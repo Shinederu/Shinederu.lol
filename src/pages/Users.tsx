@@ -70,11 +70,11 @@ const Users = () => {
   };
 
   useEffect(() => {
-    if (!authCtx.is_admin) return;
+    if (!authCtx.can_manage_users) return;
     void loadUsers();
-  }, [authCtx.is_admin]);
+  }, [authCtx.can_manage_users]);
 
-  if (!authCtx.is_admin) {
+  if (!authCtx.can_manage_users) {
     return <Navigate to="/dashboard" replace />;
   }
 

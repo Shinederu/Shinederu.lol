@@ -9,10 +9,10 @@ const Dashboard = () => {
     <div className="grid gap-8">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         <MenuCards active={true} name="Profile" desc="Vois et modifie ton profile !" url="/profile" picture="Profile" />
-        {authCtx.is_admin ? (
+        {authCtx.can_manage_users ? (
           <MenuCards active={true} name="Utilisateurs" desc="Gere les droits administrateurs." url="/users" picture="Utilisateurs" />
         ) : null}
-        {authCtx.is_admin ? (
+        {authCtx.can_manage_announcements ? (
           <MenuCards active={true} name="Annonces" desc="Gere les annonces de l'accueil." url="/announcements" picture="Annonces" />
         ) : null}
         <MenuCards active={false} name="MelodyQuest" desc="Un blindtest amusant !" url="/MelodyQuest" picture="MelodyQuest" />

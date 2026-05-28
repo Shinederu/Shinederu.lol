@@ -35,21 +35,21 @@ const logged = () => (
     </>
 )
 
-const adminLogged = () => (
+const privilegedLogged = (canManageUsers: boolean, canManageAnnouncements: boolean) => (
     <>
         {logged()}
-        <Route path="/users" element={<Users />} />
-        <Route path="/announcements" element={<Announcements />} />
+        {canManageUsers ? <Route path="/users" element={<Users />} /> : null}
+        {canManageAnnouncements ? <Route path="/announcements" element={<Announcements />} /> : null}
     </>
 )
 
-export const getRoutes = (isLoggedIn: boolean, isAdmin: boolean) => {
+export const getRoutes = (isLoggedIn: boolean, canManageUsers: boolean, canManageAnnouncements: boolean) => {
     if (!isLoggedIn) {
         return anonymous();
     }
 
-    if (isAdmin) {
-        return adminLogged();
+    if (canManageUsers || canManageAnnouncements) {
+        return privilegedLogged(canManageUsers, canManageAnnouncements);
     }
 
     return logged();

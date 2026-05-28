@@ -10,6 +10,8 @@ type AuthDataType = {
   avatar_url?: string;
   role: string;
   is_admin: boolean;
+  can_manage_users: boolean;
+  can_manage_announcements: boolean;
   created_at: string;
 };
 
@@ -26,6 +28,8 @@ const EMPTY_AUTH: AuthDataType = {
   avatar_url: "",
   role: "",
   is_admin: false,
+  can_manage_users: false,
+  can_manage_announcements: false,
   created_at: "",
 };
 
@@ -44,8 +48,23 @@ const toBool = (value: unknown): boolean => {
   return ["1", "true", "yes", "on", "admin"].includes(v);
 };
 
+const hasProjectPermission = (user: AuthUser, project: string, permission: string): boolean => {
+  const access = user.project_access;
+  const permissions = access?.permissions;
+  const projectPermissions = permissions?.[project];
+
+  if (!projectPermissions || typeof projectPermissions !== "object") {
+    return false;
+  }
+
+  return toBool(projectPermissions[permission]);
+};
+
 const mapUserToAuthData = (isLoggedIn: boolean, user: AuthUser | null | undefined): AuthDataType => {
   if (!isLoggedIn || !user) return EMPTY_AUTH;
+
+  const role = String(user.role ?? "").toLowerCase();
+  const isGlobalAdmin = toBool(user.is_admin) || role === "admin" || toBool(user.project_access?.is_global_admin);
 
   return {
     isLoggedIn: true,
@@ -53,8 +72,10 @@ const mapUserToAuthData = (isLoggedIn: boolean, user: AuthUser | null | undefine
     username: String(user.username ?? ""),
     email: String(user.email ?? ""),
     avatar_url: String(user.avatar_url ?? ""),
-    role: String(user.role ?? "").toLowerCase(),
-    is_admin: toBool(user.is_admin) || String(user.role ?? "").toLowerCase() === "admin",
+    role,
+    is_admin: isGlobalAdmin,
+    can_manage_users: isGlobalAdmin || hasProjectPermission(user, "auth", "users_manage"),
+    can_manage_announcements: isGlobalAdmin || hasProjectPermission(user, "main", "announcements_manage"),
     created_at: String(user.created_at ?? ""),
   };
 };
@@ -85,6 +106,8 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
         avatar_url: "",
         role: "user",
         is_admin: false,
+        can_manage_users: false,
+        can_manage_announcements: false,
         created_at: "2024-01-01T00:00:00Z",
       });
       return true;

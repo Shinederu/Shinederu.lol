@@ -389,12 +389,11 @@ const CoreAccess = () => {
                       className="w-full rounded-lg border border-[#2f2f2f] bg-[#141414] p-4 text-left hover:border-indigo-500"
                     >
                       <div className="flex flex-wrap items-center gap-2">
-                        <strong>{project.code}</strong>
+                        <strong>{project.name}</strong>
                         <span className={`rounded px-2 py-1 text-xs ${project.is_active ? "bg-green-900 text-green-200" : "bg-red-900 text-red-200"}`}>
                           {project.is_active ? "actif" : "inactif"}
                         </span>
                       </div>
-                      <p className="mt-1 text-gray-200">{project.name}</p>
                       <p className="mt-1 text-sm text-gray-400">{project.description || "Aucune description"}</p>
                     </button>
                   ))}
@@ -463,7 +462,7 @@ const CoreAccess = () => {
                       className="w-full rounded-md border border-gray-700 bg-[#202020] p-2"
                     >
                       {projects.map((project) => (
-                        <option key={project.id} value={project.id}>{project.code} - {project.name}</option>
+                        <option key={project.id} value={project.id}>{project.name}</option>
                       ))}
                     </select>
                   </div>
@@ -476,7 +475,7 @@ const CoreAccess = () => {
                     >
                       <option value={0}>Nouveau role</option>
                       {filteredRoles.map((role) => (
-                        <option key={role.id} value={role.id}>{role.role_key} - {role.label}</option>
+                        <option key={role.id} value={role.id}>{role.label}</option>
                       ))}
                     </select>
                   </div>
@@ -526,8 +525,8 @@ const CoreAccess = () => {
                             onChange={() => togglePermissionId(permission.id)}
                           />
                           <span>
-                            <strong>{permission.permission_key}</strong>
-                            <span className="block text-gray-400">{permission.label}</span>
+                            <strong>{permission.label}</strong>
+                            {permission.description ? <span className="block text-gray-400">{permission.description}</span> : null}
                           </span>
                         </label>
                       ))}
@@ -555,7 +554,7 @@ const CoreAccess = () => {
                       className="w-full rounded-md border border-gray-700 bg-[#202020] p-2"
                     >
                       {projects.map((project) => (
-                        <option key={project.id} value={project.id}>{project.code} - {project.name}</option>
+                        <option key={project.id} value={project.id}>{project.name}</option>
                       ))}
                     </select>
                   </div>
@@ -568,7 +567,7 @@ const CoreAccess = () => {
                     >
                       <option value={0}>Nouvelle permission</option>
                       {filteredPermissions.map((permission) => (
-                        <option key={permission.id} value={permission.id}>{permission.permission_key} - {permission.label}</option>
+                        <option key={permission.id} value={permission.id}>{permission.label}</option>
                       ))}
                     </select>
                   </div>
@@ -666,7 +665,7 @@ const CoreAccess = () => {
                     className="rounded-md border border-gray-700 bg-[#202020] p-2"
                   >
                     {activeProjects.map((project) => (
-                      <option key={project.id} value={project.code}>{project.code}</option>
+                      <option key={project.id} value={project.code}>{project.name}</option>
                     ))}
                   </select>
                   <div className="rounded-lg border border-[#2f2f2f] p-3">
@@ -681,8 +680,8 @@ const CoreAccess = () => {
                             onChange={() => toggleRoleKey(role.role_key)}
                           />
                           <span>
-                            <strong>{role.role_key}</strong>
-                            <span className="block text-gray-400">{role.label}</span>
+                            <strong>{role.label}</strong>
+                            {role.description ? <span className="block text-gray-400">{role.description}</span> : null}
                           </span>
                         </label>
                       ))}

@@ -131,15 +131,29 @@ const CoreAccess = () => {
   const [roleForm, setRoleForm] = useState<RoleForm>(emptyRoleForm);
   const [rolePermissionIds, setRolePermissionIds] = useState<number[]>([]);
   const [permissionForm, setPermissionForm] = useState<PermissionForm>(emptyPermissionForm);
+  const [selectedRoleProjectId, setSelectedRoleProjectId] = useState(0);
+  const [selectedPermissionProjectId, setSelectedPermissionProjectId] = useState(0);
   const [selectedUserId, setSelectedUserId] = useState(0);
   const [selectedProjectCode, setSelectedProjectCode] = useState("core");
   const [selectedRoleKeys, setSelectedRoleKeys] = useState<string[]>([]);
 
   const projects = useMemo(() => sortByCode(overview?.projects ?? []), [overview]);
   const activeProjects = useMemo(() => projects.filter((project) => project.is_active), [projects]);
-  const selectedProject = useMemo(
-    () => projects.find((project) => project.id === roleForm.project_id) ?? projects[0] ?? null,
-    [projects, roleForm.project_id]
+  const selectedRoleProject = useMemo(
+    () => projects.find((project) => project.id === selectedRoleProjectId) ?? projects[0] ?? null,
+    [projects, selectedRoleProjectId]
+  );
+  const selectedPermissionProject = useMemo(
+    () => projects.find((project) => project.id === selectedPermissionProjectId) ?? projects[0] ?? null,
+    [projects, selectedPermissionProjectId]
+  );
+  const filteredRoles = useMemo(
+    () => overview?.roles.filter((role) => role.project_id === selectedRoleProject?.id) ?? [],
+    [overview, selectedRoleProject]
+  );
+  const filteredPermissions = useMemo(
+    () => overview?.permissions.filter((permission) => permission.project_id === selectedPermissionProject?.id) ?? [],
+    [overview, selectedPermissionProject]
   );
   const selectedAssignmentProject = useMemo(
     () => projects.find((project) => project.code === selectedProjectCode) ?? projects[0] ?? null,
@@ -172,10 +186,12 @@ const CoreAccess = () => {
 
   useEffect(() => {
     if (!overview) return;
-    if (roleForm.project_id === 0 && projects[0]) {
+    if (selectedRoleProjectId === 0 && projects[0]) {
+      setSelectedRoleProjectId(projects[0].id);
       setRoleForm((form) => ({ ...form, project_id: projects[0].id }));
     }
-    if (permissionForm.project_id === 0 && projects[0]) {
+    if (selectedPermissionProjectId === 0 && projects[0]) {
+      setSelectedPermissionProjectId(projects[0].id);
       setPermissionForm((form) => ({ ...form, project_id: projects[0].id }));
     }
     if (selectedUserId === 0 && overview.users[0]) {
@@ -184,7 +200,7 @@ const CoreAccess = () => {
     if (!projects.some((project) => project.code === selectedProjectCode) && projects[0]) {
       setSelectedProjectCode(projects[0].code);
     }
-  }, [overview, permissionForm.project_id, projects, roleForm.project_id, selectedProjectCode, selectedUserId]);
+  }, [overview, projects, selectedPermissionProjectId, selectedProjectCode, selectedRoleProjectId, selectedUserId]);
 
   useEffect(() => {
     if (!selectedUser || !selectedAssignmentProject) {
@@ -273,8 +289,11 @@ const CoreAccess = () => {
       is_active: role.is_active,
     } : {
       ...emptyRoleForm,
-      project_id: selectedProject?.id ?? projects[0]?.id ?? 0,
+      project_id: selectedRoleProject?.id ?? projects[0]?.id ?? 0,
     });
+    if (role) {
+      setSelectedRoleProjectId(role.project_id);
+    }
     setRolePermissionIds(role?.permission_ids ?? []);
   };
 
@@ -288,8 +307,22 @@ const CoreAccess = () => {
       is_active: permission.is_active,
     } : {
       ...emptyPermissionForm,
-      project_id: selectedProject?.id ?? projects[0]?.id ?? 0,
+      project_id: selectedPermissionProject?.id ?? projects[0]?.id ?? 0,
     });
+    if (permission) {
+      setSelectedPermissionProjectId(permission.project_id);
+    }
+  };
+
+  const selectRoleProject = (projectId: number) => {
+    setSelectedRoleProjectId(projectId);
+    setRoleForm({ ...emptyRoleForm, project_id: projectId });
+    setRolePermissionIds([]);
+  };
+
+  const selectPermissionProject = (projectId: number) => {
+    setSelectedPermissionProjectId(projectId);
+    setPermissionForm({ ...emptyPermissionForm, project_id: projectId });
   };
 
   const togglePermissionId = (permissionId: number) => {
@@ -422,29 +455,31 @@ const CoreAccess = () => {
                   </button>
                 </div>
                 <div className="grid gap-3">
-                  <select
-                    value={roleForm.id}
-                    onChange={(event) => loadRole(overview.roles.find((role) => role.id === Number(event.target.value)) ?? null)}
-                    className="rounded-md border border-gray-700 bg-[#202020] p-2"
-                  >
-                    <option value={0}>Nouveau role</option>
-                    {overview.roles.map((role) => (
-                      <option key={role.id} value={role.id}>{role.project_code}.{role.role_key}</option>
-                    ))}
-                  </select>
-                  <select
-                    value={roleForm.project_id}
-                    disabled={roleForm.id > 0}
-                    onChange={(event) => {
-                      setRoleForm((form) => ({ ...form, project_id: Number(event.target.value) }));
-                      setRolePermissionIds([]);
-                    }}
-                    className="rounded-md border border-gray-700 bg-[#202020] p-2 disabled:opacity-60"
-                  >
-                    {projects.map((project) => (
-                      <option key={project.id} value={project.id}>{project.code}</option>
-                    ))}
-                  </select>
+                  <div>
+                    <label className="mb-1 block text-sm text-gray-300">Projet</label>
+                    <select
+                      value={selectedRoleProject?.id ?? 0}
+                      onChange={(event) => selectRoleProject(Number(event.target.value))}
+                      className="w-full rounded-md border border-gray-700 bg-[#202020] p-2"
+                    >
+                      {projects.map((project) => (
+                        <option key={project.id} value={project.id}>{project.code} - {project.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="mb-1 block text-sm text-gray-300">Role</label>
+                    <select
+                      value={roleForm.id}
+                      onChange={(event) => loadRole(filteredRoles.find((role) => role.id === Number(event.target.value)) ?? null)}
+                      className="w-full rounded-md border border-gray-700 bg-[#202020] p-2"
+                    >
+                      <option value={0}>Nouveau role</option>
+                      {filteredRoles.map((role) => (
+                        <option key={role.id} value={role.id}>{role.role_key} - {role.label}</option>
+                      ))}
+                    </select>
+                  </div>
                   <input
                     value={roleForm.role_key}
                     disabled={roleForm.id > 0}
@@ -475,7 +510,7 @@ const CoreAccess = () => {
                     <input
                       type="checkbox"
                       checked={roleForm.is_active}
-                      disabled={roleForm.role_key === "super_admin" && selectedProject?.code === "core"}
+                      disabled={roleForm.role_key === "super_admin" && selectedRoleProject?.code === "core"}
                       onChange={(event) => setRoleForm((form) => ({ ...form, is_active: event.target.checked }))}
                     />
                     Actif
@@ -483,7 +518,7 @@ const CoreAccess = () => {
                   <div className="rounded-lg border border-[#2f2f2f] p-3">
                     <p className="mb-2 text-sm text-gray-300">Permissions du role</p>
                     <div className="grid gap-2">
-                      {(selectedProject?.permissions ?? []).map((permission) => (
+                      {(selectedRoleProject?.permissions ?? []).map((permission) => (
                         <label key={permission.id} className="flex items-start gap-2 text-sm">
                           <input
                             type="checkbox"
@@ -512,26 +547,31 @@ const CoreAccess = () => {
                   </button>
                 </div>
                 <div className="grid gap-3">
-                  <select
-                    value={permissionForm.id}
-                    onChange={(event) => loadPermission(overview.permissions.find((permission) => permission.id === Number(event.target.value)) ?? null)}
-                    className="rounded-md border border-gray-700 bg-[#202020] p-2"
-                  >
-                    <option value={0}>Nouvelle permission</option>
-                    {overview.permissions.map((permission) => (
-                      <option key={permission.id} value={permission.id}>{permission.project_code}.{permission.permission_key}</option>
-                    ))}
-                  </select>
-                  <select
-                    value={permissionForm.project_id}
-                    disabled={permissionForm.id > 0}
-                    onChange={(event) => setPermissionForm((form) => ({ ...form, project_id: Number(event.target.value) }))}
-                    className="rounded-md border border-gray-700 bg-[#202020] p-2 disabled:opacity-60"
-                  >
-                    {projects.map((project) => (
-                      <option key={project.id} value={project.id}>{project.code}</option>
-                    ))}
-                  </select>
+                  <div>
+                    <label className="mb-1 block text-sm text-gray-300">Projet</label>
+                    <select
+                      value={selectedPermissionProject?.id ?? 0}
+                      onChange={(event) => selectPermissionProject(Number(event.target.value))}
+                      className="w-full rounded-md border border-gray-700 bg-[#202020] p-2"
+                    >
+                      {projects.map((project) => (
+                        <option key={project.id} value={project.id}>{project.code} - {project.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="mb-1 block text-sm text-gray-300">Permission</label>
+                    <select
+                      value={permissionForm.id}
+                      onChange={(event) => loadPermission(filteredPermissions.find((permission) => permission.id === Number(event.target.value)) ?? null)}
+                      className="w-full rounded-md border border-gray-700 bg-[#202020] p-2"
+                    >
+                      <option value={0}>Nouvelle permission</option>
+                      {filteredPermissions.map((permission) => (
+                        <option key={permission.id} value={permission.id}>{permission.permission_key} - {permission.label}</option>
+                      ))}
+                    </select>
+                  </div>
                   <input
                     value={permissionForm.permission_key}
                     disabled={permissionForm.id > 0}

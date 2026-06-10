@@ -5,6 +5,7 @@ import Title from "../decoration/Title";
 import { ModalContext } from "@/shared/context/ModalContext";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@shinederu/auth-react";
+import { USERNAME_MAX_LENGTH, USERNAME_MIN_LENGTH } from "@/shared/auth/constraints";
 
 const getResponseMessage = (data: unknown, fallback: string) => {
   if (data && typeof data === "object") {
@@ -158,6 +159,8 @@ const ModalLogin = () => {
                     placeholder="Pseudo"
                     value={formData.registerUsername}
                     onChange={handleChange}
+                    minLength={USERNAME_MIN_LENGTH}
+                    maxLength={USERNAME_MAX_LENGTH}
                     className="w-full p-3 border border-gray-700 rounded bg-[#202020] text-white mb-2"
                   />
                   <input

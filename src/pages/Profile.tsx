@@ -5,6 +5,7 @@ import Title from "@/components/decoration/Title";
 import { DateTimeFormatter } from "@/utils/DateTimeFormatter";
 import { UserType } from "@/types/User";
 import { useAuth } from "@shinederu/auth-react";
+import { USERNAME_MAX_LENGTH, USERNAME_MIN_LENGTH } from "@/shared/auth/constraints";
 
 const getResponseMessage = (data: unknown, fallback: string) => {
   if (data && typeof data === "object") {
@@ -148,8 +149,13 @@ const Profile = () => {
                   name="username"
                   value={editedUser.username}
                   onChange={(event) => setEditedUser({ ...editedUser, username: event.target.value })}
+                  minLength={USERNAME_MIN_LENGTH}
+                  maxLength={USERNAME_MAX_LENGTH}
                   className="p-2 border border-gray-700 rounded-md bg-[#202020] text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
+                <p className="mt-1 text-xs text-gray-400">
+                  {editedUser.username.length}/{USERNAME_MAX_LENGTH} caracteres
+                </p>
               </div>
 
               <div>Email: {authCtx.email}</div>

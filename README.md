@@ -51,12 +51,13 @@ Avec une integration locale workspace via:
 - `src/shared/context/AuthContext.tsx`
 
 Le modal Connexion/Inscription soumet les formulaires au clavier: appuyer sur `Enter` dans les champs login/password ou inscription declenche le meme traitement que le bouton correspondant.
+Les pseudos doivent faire entre 4 et 24 caracteres. La limite est appliquee dans le formulaire d'inscription, la page Profil et l'API Auth.
 
 ## Dashboard admin
 
 Le dashboard expose des tuiles selon les droits renvoyes par `auth?action=me`:
 
-- `Utilisateurs`: visible avec le droit backend `auth.users.manage` expose au frontend via `auth.users_manage`, ou super-admin global.
+- `Utilisateurs`: visible avec le droit backend `auth.users.manage` expose au frontend via `auth.users_manage`, ou super-admin global. La page `/users` sert d'annuaire des comptes: recherche, etat de verification email, compteurs et apercu des roles projets centralises. Les modifications de roles se font dans `/permissions`.
 - `Annonces`: visible avec le droit backend `main.announcements.manage` expose au frontend via `main.announcements_manage`, ou super-admin global.
 - `Permissions`: visible uniquement pour les super-admins, route `/permissions`.
 - `MelodyQuest`: tuile active vers `https://melodyquest.shinederu.ch/#/main`.

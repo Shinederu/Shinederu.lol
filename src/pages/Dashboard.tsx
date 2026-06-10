@@ -10,7 +10,7 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         <MenuCards active={true} name="Profile" desc="Vois et modifie ton profile !" url="/profile" picture="Profile" />
         {authCtx.can_manage_users ? (
-          <MenuCards active={true} name="Utilisateurs" desc="Gere les droits administrateurs." url="/users" picture="Utilisateurs" />
+          <MenuCards active={true} name="Utilisateurs" desc="Consulte les comptes et leurs acces." url="/users" picture="Utilisateurs" />
         ) : null}
         {authCtx.can_manage_announcements ? (
           <MenuCards active={true} name="Annonces" desc="Gere les annonces de l'accueil." url="/announcements" picture="Annonces" />

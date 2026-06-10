@@ -57,7 +57,7 @@ Les pseudos doivent faire entre 4 et 24 caracteres. La limite est appliquee dans
 
 Le dashboard expose des tuiles selon les droits renvoyes par `auth?action=me`:
 
-- `Utilisateurs`: visible avec le droit backend `auth.users.manage` expose au frontend via `auth.users_manage`, ou super-admin global. La page `/users` sert d'annuaire des comptes: recherche, etat de verification email, compteurs et apercu des roles projets centralises. Les modifications de roles se font dans `/permissions`.
+- `Utilisateurs`: visible avec le droit backend `auth.users.manage` expose au frontend via `auth.users_manage`, ou super-admin global. La page `/users` sert d'annuaire et de management leger des comptes: recherche, etat de verification email, compteurs, apercu des roles projets centralises, modification du pseudo, modification de l'avatar et blocage/deblocage de compte. Les modifications de roles se font dans `/permissions`.
 - `Annonces`: visible avec le droit backend `main.announcements.manage` expose au frontend via `main.announcements_manage`, ou super-admin global.
 - `Permissions`: visible uniquement pour les super-admins, route `/permissions`.
 - `MelodyQuest`: tuile active vers `https://melodyquest.shinederu.ch/#/main`.

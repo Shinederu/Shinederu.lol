@@ -39,7 +39,9 @@ APIs partagees:
 Important infra:
 
 - `P:\PROD` est le dossier de prod documente.
-- `Z:\Nginx\www` peut etre le volume `/var/www` effectivement servi par Docker. En cas d'ecart entre fichiers copies et URL publique, comparer `P:\PROD` et `Z:\Nginx\www`.
+- `P:\PROD` est le volume `/var/www` documente pour Docker. En cas d'ecart
+  entre fichiers copies et URL publique, verifier d'abord `P:\PROD` et la
+  configuration Nginx.
 - Ne jamais copier de secrets dans les repos ni dans `P:\PROD`.
 
 ## URLs live
@@ -262,7 +264,8 @@ Workflow standard:
 3. Commit et push sur `main`.
 4. Copier vers `P:\PROD`.
 5. Verifier l'URL publique.
-6. Si l'URL ne reflete pas `P:\PROD`, comparer avec `Z:\Nginx\www`.
+6. Si l'URL ne reflete pas `P:\PROD`, verifier la configuration Nginx et le
+   dossier runtime cible.
 
 Frontend:
 

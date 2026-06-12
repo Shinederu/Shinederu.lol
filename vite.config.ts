@@ -18,8 +18,8 @@ export default defineConfig({
       { find: '@', replacement: path.resolve(__dirname, 'src') },
       { find: '@pages', replacement: path.resolve(__dirname, 'src/pages') },
       { find: '@comp', replacement: path.resolve(__dirname, 'src/components') },
-      { find: '@shinederu/auth-core', replacement: path.resolve(__dirname, '../shinederu-auth-core/src/index.ts') },
-      { find: '@shinederu/auth-react', replacement: path.resolve(__dirname, '../shinederu-auth-react/src/index.ts') }
+      { find: '@shinederu/auth-core', replacement: path.resolve(__dirname, '../Module-Auth-Core/src/index.ts') },
+      { find: '@shinederu/auth-react', replacement: path.resolve(__dirname, '../Module-Auth-React/src/index.ts') }
     ]
   }
 });

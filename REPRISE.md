@@ -3,8 +3,8 @@
 Etat: projet principal mis en pause le 2026-06-12 dans un etat deploye et fonctionnel.
 
 Ce document sert de point de reprise pour le site principal `https://shinederu.ch/`.
-Il couvre le frontend `Shinederu/` et les morceaux API directement utilises par ce site:
-`API/auth`, `API/main-site` et `API/core`.
+Il couvre le frontend `App-ShinedeHub/` et les morceaux API directement utilises par ce site:
+`Module-Auth-API`, `App-ShinedeHub-API` et `Module-ShinedeCore-PHP`.
 
 ## But du projet
 
@@ -24,20 +24,17 @@ Il sert a:
 
 Frontend principal:
 
-- repo local: `P:\DEV\GitHub\Shinederu`
-- remote observe: `https://github.com/Shinederu/Shinederu.lol.git`
-- build prod: `P:\DEV\GitHub\Shinederu\dist`
+- repo local: `P:\DEV\GitHub\App-ShinedeHub`
+- remote: `https://github.com/Shinederu/App-ShinedeHub.git`
+- build prod: `P:\DEV\GitHub\App-ShinedeHub\dist`
 - dossier deploye documente: `P:\PROD\Shinederu`
 
-API partagee:
+APIs partagees:
 
-- repo local: `P:\DEV\GitHub\API`
-- remote: `https://github.com/Shinederu/shinederu-api.git`
-- modules concernes:
-  - `API/auth`
-  - `API/main-site`
-  - `API/core`
-- dossier deploye documente: `P:\PROD\API`
+- auth/users: `P:\DEV\GitHub\Module-Auth-API` -> `P:\PROD\API\auth`
+- site principal: `P:\DEV\GitHub\App-ShinedeHub-API` -> `P:\PROD\API\main-site`
+- socle permissions: `P:\DEV\GitHub\Module-ShinedeCore-PHP` -> `P:\PROD\API\core`
+- ancien monorepo historique: `P:\DEV\GitHub\Legacy-Shinederu-API`
 
 Important infra:
 
@@ -67,8 +64,8 @@ Stack:
 Aliases importants dans `vite.config.ts`:
 
 - `@` -> `src`
-- `@shinederu/auth-core` -> `../shinederu-auth-core/src/index.ts`
-- `@shinederu/auth-react` -> `../shinederu-auth-react/src/index.ts`
+- `@shinederu/auth-core` -> `../Module-Auth-Core/src/index.ts`
+- `@shinederu/auth-react` -> `../Module-Auth-React/src/index.ts`
 
 Ces aliases permettent de travailler avec les libs auth locales sans publier de package.
 
@@ -79,7 +76,7 @@ Fichiers importants:
 - `src/shared/context/AuthContext.tsx`: mapping de `auth?action=me` vers les flags frontend.
 - `src/shared/auth/client.ts`: client auth partage.
 - `src/shared/auth/constraints.ts`: limites frontend du pseudo.
-- `src/shared/mainSite/client.ts`: client des annonces `API/main-site`.
+- `src/shared/mainSite/client.ts`: client des annonces `App-ShinedeHub-API`, endpoint public `API/main-site`.
 - `src/components/modals/ModalLogin.tsx`: login/register.
 - `src/pages/Dashboard.tsx`: dashboard et tuiles projets.
 - `src/pages/Users.tsx`: annuaire et management leger des comptes.
@@ -123,7 +120,7 @@ Regles actuelles:
 
 - pseudo: minimum 4 caracteres, maximum 24 caracteres;
 - limite frontend: `src/shared/auth/constraints.ts`;
-- limite backend: `API/auth/config/config.php`;
+- limite backend: `Module-Auth-API/config/config.php`;
 - login/register peut etre soumis au clavier avec `Enter`;
 - l'ancien `users.role = 'admin'` existe encore comme fallback de transition;
 - les vrais droits applicatifs sont dans `core_*`.
@@ -183,7 +180,7 @@ Permissions utiles pour le site principal:
 
 Backend:
 
-- module: `API/main-site`
+- module source: `App-ShinedeHub-API`
 - endpoint: `https://api.shinederu.ch/main-site/`
 - table cible: `main_announcements`
 
@@ -214,7 +211,7 @@ Instance partagee:
 
 Secrets:
 
-- les identifiants applicatifs sont dans `API/auth/.env`;
+- les identifiants applicatifs sont dans `Module-Auth-API/.env` en source et `P:\PROD\API\auth\.env` en production;
 - les acces admin/infra sont documentes dans `P:\DEV\Access`;
 - ne jamais recopier les secrets dans les repos ou les reponses.
 
@@ -233,11 +230,11 @@ Tables liees au site principal:
 
 Migrations importantes:
 
-- `API/core/sql/001_core_project_access.sql`
-- `API/auth/sql/001_auth_prefix_tables.sql`
-- `API/auth/sql/002_user_account_moderation.sql`
-- `API/main-site/sql/001_main_site_announcements.sql`
-- `API/main-site/sql/002_rename_main_announcements.sql`
+- `Module-ShinedeCore-PHP/sql/001_core_project_access.sql`
+- `Module-Auth-API/sql/001_auth_prefix_tables.sql`
+- `Module-Auth-API/sql/002_user_account_moderation.sql`
+- `App-ShinedeHub-API/sql/001_main_site_announcements.sql`
+- `App-ShinedeHub-API/sql/002_rename_main_announcements.sql`
 
 Etat au moment de la pause:
 
@@ -247,7 +244,7 @@ Etat au moment de la pause:
 Pour verifier la migration sans afficher de secrets:
 
 ```powershell
-php -r "require_once 'P:/DEV/GitHub/API/auth/vendor/autoload.php'; Dotenv\Dotenv::createImmutable('P:/DEV/GitHub/API/auth')->safeLoad(); `$dsn=sprintf('%s:host=%s;port=%s;dbname=%s;charset=utf8mb4', `$_ENV['DB_TYPE'] ?? 'mysql', '192.168.10.10', `$_ENV['DB_PORT'] ?? '3306', `$_ENV['DB_NAME'] ?? 'ShinedeCore'); `$pdo=new PDO(`$dsn, `$_ENV['DB_USER'] ?? 'root', `$_ENV['DB_PASS'] ?? '', [PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION]); `$stmt=`$pdo->prepare('SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND COLUMN_NAME IN (?,?,?,?) ORDER BY COLUMN_NAME'); `$stmt->execute(['users','is_banned','banned_at','banned_by_user_id','ban_reason']); echo implode(', ', `$stmt->fetchAll(PDO::FETCH_COLUMN));"
+php -r "require_once 'P:/DEV/GitHub/Module-Auth-API/vendor/autoload.php'; Dotenv\Dotenv::createImmutable('P:/DEV/GitHub/Module-Auth-API')->safeLoad(); `$dsn=sprintf('%s:host=%s;port=%s;dbname=%s;charset=utf8mb4', `$_ENV['DB_TYPE'] ?? 'mysql', '192.168.10.10', `$_ENV['DB_PORT'] ?? '3306', `$_ENV['DB_NAME'] ?? 'ShinedeCore'); `$pdo=new PDO(`$dsn, `$_ENV['DB_USER'] ?? 'root', `$_ENV['DB_PASS'] ?? '', [PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION]); `$stmt=`$pdo->prepare('SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND COLUMN_NAME IN (?,?,?,?) ORDER BY COLUMN_NAME'); `$stmt->execute(['users','is_banned','banned_at','banned_by_user_id','ban_reason']); echo implode(', ', `$stmt->fetchAll(PDO::FETCH_COLUMN));"
 ```
 
 Pour appliquer une migration DDL en reprise:
@@ -270,16 +267,16 @@ Workflow standard:
 Frontend:
 
 ```powershell
-cd P:\DEV\GitHub\Shinederu
+cd P:\DEV\GitHub\App-ShinedeHub
 npm run build
-Copy-Item -LiteralPath 'P:\DEV\GitHub\Shinederu\dist\index.html' -Destination 'P:\PROD\Shinederu\index.html' -Force
-Copy-Item -LiteralPath 'P:\DEV\GitHub\Shinederu\dist\assets' -Destination 'P:\PROD\Shinederu' -Recurse -Force
-Copy-Item -LiteralPath 'P:\DEV\GitHub\Shinederu\dist\img' -Destination 'P:\PROD\Shinederu' -Recurse -Force
+Copy-Item -LiteralPath 'P:\DEV\GitHub\App-ShinedeHub\dist\index.html' -Destination 'P:\PROD\Shinederu\index.html' -Force
+Copy-Item -LiteralPath 'P:\DEV\GitHub\App-ShinedeHub\dist\assets' -Destination 'P:\PROD\Shinederu' -Recurse -Force
+Copy-Item -LiteralPath 'P:\DEV\GitHub\App-ShinedeHub\dist\img' -Destination 'P:\PROD\Shinederu' -Recurse -Force
 ```
 
 API:
 
-- copier uniquement les modules/fichiers touches depuis `P:\DEV\GitHub\API` vers `P:\PROD\API`;
+- copier uniquement les fichiers touches depuis les repos API extraits vers leur dossier stable dans `P:\PROD\API`;
 - ne pas ecraser `.env`, `vendor/`, logs, fichiers runtime;
 - pour `auth`, verifier `vendor/` en production si Composer a change.
 
@@ -288,25 +285,27 @@ API:
 Git:
 
 ```powershell
-git -c safe.directory=* -C P:\DEV\GitHub\Shinederu status --short --branch
-git -c safe.directory=* -C P:\DEV\GitHub\API status --short --branch
-git -c safe.directory=* -C P:\DEV\GitHub\shinederu-auth-core status --short --branch
-git -c safe.directory=* -C P:\DEV\GitHub\shinederu-auth-react status --short --branch
+git -c safe.directory=* -C P:\DEV\GitHub\App-ShinedeHub status --short --branch
+git -c safe.directory=* -C P:\DEV\GitHub\Module-Auth-API status --short --branch
+git -c safe.directory=* -C P:\DEV\GitHub\App-ShinedeHub-API status --short --branch
+git -c safe.directory=* -C P:\DEV\GitHub\Module-ShinedeCore-PHP status --short --branch
+git -c safe.directory=* -C P:\DEV\GitHub\Module-Auth-Core status --short --branch
+git -c safe.directory=* -C P:\DEV\GitHub\Module-Auth-React status --short --branch
 ```
 
 Build front:
 
 ```powershell
-cd P:\DEV\GitHub\Shinederu
+cd P:\DEV\GitHub\App-ShinedeHub
 npm run build
 ```
 
 Lint PHP:
 
 ```powershell
-Get-ChildItem P:\DEV\GitHub\API\auth -Recurse -Filter *.php | ? { $_.FullName -notmatch '\\vendor\\' } | % { php -l $_.FullName }
-Get-ChildItem P:\DEV\GitHub\API\main-site -Recurse -Filter *.php | % { php -l $_.FullName }
-Get-ChildItem P:\DEV\GitHub\API\core -Recurse -Filter *.php | % { php -l $_.FullName }
+Get-ChildItem P:\DEV\GitHub\Module-Auth-API -Recurse -Filter *.php | ? { $_.FullName -notmatch '\\vendor\\' } | % { php -l $_.FullName }
+Get-ChildItem P:\DEV\GitHub\App-ShinedeHub-API -Recurse -Filter *.php | % { php -l $_.FullName }
+Get-ChildItem P:\DEV\GitHub\Module-ShinedeCore-PHP -Recurse -Filter *.php | % { php -l $_.FullName }
 ```
 
 Smoke public:
@@ -364,14 +363,14 @@ Super-admin:
 
 Derniers changements fonctionnels du site principal avant pause:
 
-- `Shinederu` `40ecdd1`: actions de management utilisateur dans `/users`.
-- `API` `cb82b2d`: controles de moderation compte cote Auth.
-- `Shinederu` `4a90ff7`: refonte `/users` en annuaire.
-- `API` `c14cc2e`: enrichissement `listUsers`.
-- `Shinederu` `36245af`: tuile ShinedeWake.
-- `Shinederu` `8e0e333`: documentation tuile ShinedeWake.
+- `App-ShinedeHub` `40ecdd1`: actions de management utilisateur dans `/users`.
+- `Module-Auth-API` `21ab224`: controles de moderation compte cote Auth.
+- `App-ShinedeHub` `4a90ff7`: refonte `/users` en annuaire.
+- `Module-Auth-API` `3f1aa78`: enrichissement `listUsers`.
+- `App-ShinedeHub` `36245af`: tuile ShinedeWake.
+- `App-ShinedeHub` `8e0e333`: documentation tuile ShinedeWake.
 
-Des commits posterieurs peuvent exister pour d'autres projets dans le repo `API` (ex: MelodyQuest ou Arcadia). Toujours verifier `git log`.
+L'ancien monorepo `Legacy-Shinederu-API` conserve les hashes historiques avant extraction. Toujours verifier `git log` dans le repo actif concerne.
 
 ## Limites connues
 
@@ -382,7 +381,7 @@ Des commits posterieurs peuvent exister pour d'autres projets dans le repo `API`
 - `updateUserRole` existe encore pour compatibilite mais ne doit plus etre le chemin principal de gestion des roles.
 - Les anciens assets Vite peuvent rester dans `P:\PROD\Shinederu\assets`. Nettoyer seulement apres avoir verifie le `index.html` actif.
 - Certains anciens fichiers PHP ont eu des messages avec encodage historique imparfait. Les nouveaux fichiers touches utilisent de preference de l'ASCII.
-- Composer peut etre absent du PATH; `API/auth/vendor/` n'est pas versionne.
+- Composer peut etre absent du PATH; `Module-Auth-API/vendor/` n'est pas versionne.
 - CORS est gere par Nginx; eviter de rajouter des headers CORS PHP sans besoin.
 
 ## Idees pour une future reprise

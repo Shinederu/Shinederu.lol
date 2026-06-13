@@ -13,11 +13,11 @@ Avant toute modification:
 Regles locales:
 
 - Garder le nom projet `ShinedeHub`.
-- Garder le runtime public `P:\PROD\Shinederu`.
+- Garder le runtime public `P:\PROD\ShinedeHub`.
 - Utiliser les variables `VITE_SHINEDEHUB_*`; les anciens `VITE_SHINEDERU_*`
   ne sont que des fallbacks de transition.
 - Ne jamais deployer `.git`, `node_modules`, sources TS, configs dev, docs,
-  caches, tests ou secrets vers `P:\PROD\Shinederu`.
+  caches, tests ou secrets vers `P:\PROD\ShinedeHub`.
 - Deployer uniquement le contenu de `dist/` apres `npm run build`.
 - Les commandes metier passent par les APIs proprietaires sous
   `https://api.shinederu.ch/`.

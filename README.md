@@ -1,8 +1,8 @@
 # ShinedeHub
 
 Frontend principal de l'ecosysteme Shinede, expose sur `https://shinederu.ch/`.
-Le projet a ete renomme **ShinedeHub**; le chemin runtime historique reste
-`P:\PROD\Shinederu` pour conserver le contrat de production.
+Le projet a ete renomme **ShinedeHub**; le chemin runtime de production est
+`P:\PROD\ShinedeHub`.
 
 ## Role
 
@@ -21,7 +21,7 @@ ShinedeHub sert de portail public et d'interface admin:
 - Source: `P:\DEV\GitHub\App-ShinedeHub`
 - Remote: `https://github.com/Shinederu/App-ShinedeHub.git`
 - Build local: `P:\DEV\GitHub\App-ShinedeHub\dist`
-- Runtime production: `P:\PROD\Shinederu`
+- Runtime production: `P:\PROD\ShinedeHub`
 - URL publique: `https://shinederu.ch/`
 
 La production ne doit recevoir que le contenu de `dist/`: `index.html`, `assets/`
@@ -78,7 +78,7 @@ Schema partage: `ShinedeCore`.
 ShinedeHub n'a pas de stockage persistant propre. Les avatars, sessions,
 annonces et permissions passent par les APIs proprietaires.
 
-Le dossier `P:\PROD\Shinederu` est public et ne doit contenir aucun secret ni
+Le dossier `P:\PROD\ShinedeHub` est public et ne doit contenir aucun secret ni
 source de developpement.
 
 ## Temps reel et evenements
@@ -139,12 +139,12 @@ Invoke-WebRequest -Uri 'https://api.shinederu.ch/main-site/?action=listPublicAnn
 ```powershell
 cd P:\DEV\GitHub\App-ShinedeHub
 npm run build
-Copy-Item -LiteralPath 'P:\DEV\GitHub\App-ShinedeHub\dist\index.html' -Destination 'P:\PROD\Shinederu\index.html' -Force
-Copy-Item -LiteralPath 'P:\DEV\GitHub\App-ShinedeHub\dist\assets' -Destination 'P:\PROD\Shinederu' -Recurse -Force
-Copy-Item -LiteralPath 'P:\DEV\GitHub\App-ShinedeHub\dist\img' -Destination 'P:\PROD\Shinederu' -Recurse -Force
+Copy-Item -LiteralPath 'P:\DEV\GitHub\App-ShinedeHub\dist\index.html' -Destination 'P:\PROD\ShinedeHub\index.html' -Force
+Copy-Item -LiteralPath 'P:\DEV\GitHub\App-ShinedeHub\dist\assets' -Destination 'P:\PROD\ShinedeHub' -Recurse -Force
+Copy-Item -LiteralPath 'P:\DEV\GitHub\App-ShinedeHub\dist\img' -Destination 'P:\PROD\ShinedeHub' -Recurse -Force
 ```
 
-Avant tout nettoyage d'anciens assets dans `P:\PROD\Shinederu\assets`, verifier
+Avant tout nettoyage d'anciens assets dans `P:\PROD\ShinedeHub\assets`, verifier
 ce que reference le `index.html` deploye.
 
 ## Notes de reprise

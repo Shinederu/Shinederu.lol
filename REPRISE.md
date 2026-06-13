@@ -30,7 +30,7 @@ Frontend principal:
 - repo local: `P:\DEV\GitHub\App-ShinedeHub`
 - remote: `https://github.com/Shinederu/App-ShinedeHub.git`
 - build prod: `P:\DEV\GitHub\App-ShinedeHub\dist`
-- dossier deploye documente: `P:\PROD\Shinederu`
+- dossier deploye documente: `P:\PROD\ShinedeHub`
 
 APIs partagees:
 
@@ -283,9 +283,9 @@ Frontend:
 ```powershell
 cd P:\DEV\GitHub\App-ShinedeHub
 npm run build
-Copy-Item -LiteralPath 'P:\DEV\GitHub\App-ShinedeHub\dist\index.html' -Destination 'P:\PROD\Shinederu\index.html' -Force
-Copy-Item -LiteralPath 'P:\DEV\GitHub\App-ShinedeHub\dist\assets' -Destination 'P:\PROD\Shinederu' -Recurse -Force
-Copy-Item -LiteralPath 'P:\DEV\GitHub\App-ShinedeHub\dist\img' -Destination 'P:\PROD\Shinederu' -Recurse -Force
+Copy-Item -LiteralPath 'P:\DEV\GitHub\App-ShinedeHub\dist\index.html' -Destination 'P:\PROD\ShinedeHub\index.html' -Force
+Copy-Item -LiteralPath 'P:\DEV\GitHub\App-ShinedeHub\dist\assets' -Destination 'P:\PROD\ShinedeHub' -Recurse -Force
+Copy-Item -LiteralPath 'P:\DEV\GitHub\App-ShinedeHub\dist\img' -Destination 'P:\PROD\ShinedeHub' -Recurse -Force
 ```
 
 API:
@@ -390,7 +390,7 @@ L'ancien monorepo `Legacy-Shinederu-API` conserve les hashes historiques avant e
 
 - `npm run lint` et `npm run build` passent au moment de cette mise en conformite.
 - `updateUserRole` existe encore pour compatibilite mais ne doit plus etre le chemin principal de gestion des roles.
-- Les anciens assets Vite peuvent rester dans `P:\PROD\Shinederu\assets`. Nettoyer seulement apres avoir verifie le `index.html` actif.
+- Les anciens assets Vite peuvent rester dans `P:\PROD\ShinedeHub\assets`. Nettoyer seulement apres avoir verifie le `index.html` actif.
 - Certains anciens fichiers PHP ont eu des messages avec encodage historique imparfait. Les nouveaux fichiers touches utilisent de preference de l'ASCII.
 - Composer peut etre absent du PATH; `Module-Auth-API/vendor/` n'est pas versionne.
 - CORS est gere par Nginx; eviter de rajouter des headers CORS PHP sans besoin.

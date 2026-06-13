@@ -2,15 +2,19 @@ import { Routes } from "react-router-dom";
 import { getRoutes } from "./utils/routes";
 import Header from "./components/headers/Header";
 import Footer from "./components/footers/Footer";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { AuthContext } from "./shared/context/AuthContext";
 
 const App = () => {
 
   const { can_manage_announcements, can_manage_users, is_admin, isLoggedIn, reload } = useContext(AuthContext);
+  const hasLoadedAuth = useRef(false);
 
 
   useEffect(() => {
+    if (hasLoadedAuth.current) return;
+    hasLoadedAuth.current = true;
+
     void reload();
   }, [reload]);
 

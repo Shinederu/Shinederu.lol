@@ -1,4 +1,4 @@
-import { createContext, PropsWithChildren, useCallback, useMemo, useState } from "react";
+import { createContext, PropsWithChildren, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useAuth } from "@shinederu/auth-react";
 import { AuthUser } from "@shinederu/auth-core";
 
@@ -90,7 +90,12 @@ export const AuthContext = createContext<AuthContextType>({
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
   const auth = useAuth();
+  const authRef = useRef(auth);
   const [overrideData, setOverrideData] = useState<Partial<AuthDataType>>({});
+
+  useEffect(() => {
+    authRef.current = auth;
+  }, [auth]);
 
   const setAuthData = useCallback((newData: Partial<AuthDataType>) => {
     setOverrideData((prev) => ({ ...prev, ...newData }));
@@ -113,7 +118,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       return true;
     }
 
-    const response = await auth.me();
+    const response = await authRef.current.me();
 
     if (response.ok) {
       setOverrideData({});
@@ -122,16 +127,19 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 
     setOverrideData(EMPTY_AUTH);
     return false;
-  }, [auth]);
+  }, []);
 
   const baseData = useMemo(() => mapUserToAuthData(auth.isAuthenticated, auth.user), [auth.isAuthenticated, auth.user]);
 
-  const contextValue: AuthContextType = {
-    ...baseData,
-    ...overrideData,
-    setAuthData,
-    reload,
-  };
+  const contextValue = useMemo<AuthContextType>(
+    () => ({
+      ...baseData,
+      ...overrideData,
+      setAuthData,
+      reload,
+    }),
+    [baseData, overrideData, setAuthData, reload]
+  );
 
   return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;
 };
